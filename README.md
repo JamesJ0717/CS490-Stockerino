@@ -1,4 +1,5 @@
 # CS490-StockTicker
+
 My CS490 project using Dart and Flutter for cross platform building.
 
 ## What it does
@@ -13,4 +14,8 @@ Also, this API seems to be faster than Yahoo!'s API, which is nice, but hardly n
 
 ## Design
 
-I am planning on using a GridView layout, probably 2 cards wide, with your favorite stocks on top. I think I am going to try to implement a dark mode and a light mode, just for fun. 
+I am planning on using a GridView layout, probably 2 cards wide, with your favorite stocks on top. I think I am going to try to implement a dark mode and a light mode, just for fun.
+
+## Work so far
+
+![Stocks Loading](img/RPReplay_Final1569710448.gif)
