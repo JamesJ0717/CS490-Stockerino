@@ -1,37 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:cs490_stock_ticker/gridView.dart';
 
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
+  final MyGridView myGridView = MyGridView();
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.purple,
-      ),
-      home: MyHomePage(title: 'Stocks'),
-    );
-  }
-}
-
-class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
-
-  final String title;
-
-  @override
-  _MyHomePageState createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: <Widget>[Text('data')],
-      ),
-    );
+        title: 'Flutter Demo',
+        theme: ThemeData(
+          primarySwatch: Colors.lightBlue,
+        ),
+        home: Scaffold(
+          appBar: AppBar(
+            title: Text('Stockerino'),
+          ),
+          body: myGridView.build(),
+        ));
   }
 }
