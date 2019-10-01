@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:cs490_stock_ticker/stockInfo.dart';
+import 'package:cs490_stock_ticker/stocksDB.dart';
 
 class MyGridView {
   StockInfo myStocks = StockInfo();
@@ -17,9 +18,10 @@ class MyGridView {
         ));
   }
 
-  GridView build(List<String> stocks) {
+  GridView build(List<Stock> stocks) {
     List<Widget> cards = [];
-    stocks.forEach((stock) => cards.add(getStructuredGridCell(stock)));
+    print(stocks);
+    stocks.forEach((stock) => cards.add(getStructuredGridCell(stock.symbol)));
     return GridView.count(
         primary: true,
         padding: const EdgeInsets.all(10.0),

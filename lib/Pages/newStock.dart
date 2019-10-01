@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 
-import 'package:cs490_stock_ticker/stockNameDB.dart';
+import 'package:cs490_stock_ticker/stocksDB.dart';
+import 'package:sqflite/sqflite.dart';
 
 class NewStock {
   List<String> stocks;
 
-  final database = Stock;
-  db = database.newDatabase();
+  Future<Database> database = StockDB.db.database;
 
   Widget build() {
     return Scaffold(

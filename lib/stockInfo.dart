@@ -12,13 +12,15 @@ class StockInfo {
     String uri = 'https://cloud.iexapis.com/stable/stock/' +
         symbol +
         '/quote?token=pk_15392fe3de7e4253a1a4941d76535000';
-    response = await http
+    http.Response response = await http
         .get(Uri.encodeFull(uri), headers: {"Accept": "application/json"});
     return ResponseData.fromJson(json.decode(response.body));
   }
 
   Column makeCard(ResponseData info) {
     return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      mainAxisSize: MainAxisSize.max,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: <Widget>[
         Row(
@@ -62,7 +64,7 @@ class StockInfo {
               child: Text(info.percentChange),
             )
           ],
-        )
+        ),
       ],
     );
   }
@@ -75,9 +77,10 @@ class StockInfo {
             builder:
                 (BuildContext context, AsyncSnapshot<ResponseData> snapshot) {
               switch (snapshot.connectionState) {
-                case ConnectionState.active:
                 case ConnectionState.done:
                   return makeCard(snapshot.data);
+                case ConnectionState.active:
+                  return CircularProgressIndicator();
                 default:
                   return CircularProgressIndicator();
               }

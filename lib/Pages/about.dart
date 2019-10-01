@@ -19,7 +19,7 @@ class About {
               ],
             ),
             Text(
-                "Pariatur adipisicing veniam laboris ullamco ex esse adipisicing ad.")
+                "Culpa tempor velit ea id fugiat ad magna consectetur duis dolore esse minim esse. Aute qui laborum sint in aliquip excepteur non. Amet adipisicing deserunt aliqua anim velit esse sit.")
           ],
         ),
       ),
