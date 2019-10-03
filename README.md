@@ -10,11 +10,21 @@ The purpose of this app is to keep track of stocks that you choose. I am going t
 
 I am going to be using Investors Exchange (IEX) Trading API. This API is pretty simple in that there are not many endpoints, but they are very detailed in what they give you. For instance, `.../stock/aapl/book` returns information about the quote, bids, asks, trades, and system events.
 
+An example in JavaScript would look like this...
+
+```js
+fetch('https://cloud.iexapis.com/stable/stock/aapl/quote/?token=$token').then(
+    response => {
+        //store information somewhere
+    }
+);
+```
+
 Also, this API seems to be faster than Yahoo!'s API, which is nice, but hardly noticeable.
 
 ## Design
 
-I am planning on using a GridView layout, probably 2 cards wide, with your favorite stocks on top. I think I am going to try to implement a dark mode and a light mode, just for fun.
+I am planning on using a GridView layout, I decided on using a 1 card wide column to allow for all the information needed to look the best. I currently have dark mode enabled, but I want to implement a way to be able to toggle dark/light modes.
 
 ## External Packages
 
