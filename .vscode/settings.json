@@ -1,0 +1,7 @@
+{
+    "java.configuration.updateBuildConfiguration": "automatic",
+    "todo.statistics.project.enabled": "global.projects < 100 && project.all > 0",
+    "todo.statistics.statusbar.enabled": "global.all > 0",
+    "todo.statistics.project.text": "([pending]) [est]",
+    "todo.statistics.statusbar.text": "$(check) [finished]/[all] ([percentage]%)"
+}
