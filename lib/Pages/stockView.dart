@@ -20,7 +20,7 @@ class MyGridView {
 
   GridView build(List<Stock> stocks) {
     List<Widget> cards = [];
-    print(stocks);
+    // print(stocks);
     stocks.forEach((stock) => cards.add(getStructuredGridCell(stock.symbol)));
     return GridView.count(
         primary: true,
