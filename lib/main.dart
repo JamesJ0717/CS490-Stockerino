@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 
-import 'package:cs490_stock_ticker/Pages/gridView.dart';
+import 'package:cs490_stock_ticker/Pages/stockView.dart';
 import 'package:cs490_stock_ticker/Pages/newStock.dart';
 import 'package:cs490_stock_ticker/Pages/about.dart';
 import 'package:cs490_stock_ticker/stocksDB.dart';
@@ -42,6 +43,19 @@ class _MyAppState extends State<MyApp> with SingleTickerProviderStateMixin {
     super.dispose();
   }
 
+  RefreshController refreshController =
+      RefreshController(initialRefresh: false);
+  void onRefresh() async {
+    // monitor network fetch
+    setState(() {});
+    refreshController.refreshCompleted();
+  }
+
+  void onLoading() async {
+    // monitor network fetch
+    refreshController.loadComplete();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -50,7 +64,14 @@ class _MyAppState extends State<MyApp> with SingleTickerProviderStateMixin {
           builder: (BuildContext context, AsyncSnapshot snapshot) {
             return TabBarView(
               children: <Widget>[
-                myGridView.build(snapshot.data),
+                SmartRefresher(
+                  controller: refreshController,
+                  onRefresh: onRefresh,
+                  onLoading: onLoading,
+                  enablePullUp: false,
+                  header: MaterialClassicHeader(),
+                  child: myGridView.build(snapshot.data),
+                )
               ],
               controller: controller,
             );
@@ -59,11 +80,10 @@ class _MyAppState extends State<MyApp> with SingleTickerProviderStateMixin {
         title: Text("Stockerino"),
       ),
       bottomNavigationBar: Material(
-        color: Colors.blue,
+        color: ThemeData.dark().bottomAppBarColor,
         child: TabBar(
           tabs: <Tab>[
             Tab(icon: Icon(Icons.home)),
-            // Tab(icon: Icon(Icons.info_outline))
           ],
           controller: controller,
         ),
@@ -94,6 +114,7 @@ class _MyAppState extends State<MyApp> with SingleTickerProviderStateMixin {
               decoration: BoxDecoration(
                 color: Colors.blue,
               )),
+          //Add new stock
           FlatButton(
             padding: EdgeInsets.all(10.0),
             onPressed: () {
@@ -116,7 +137,7 @@ class _MyAppState extends State<MyApp> with SingleTickerProviderStateMixin {
                             padding: const EdgeInsets.all(8.0),
                             child: FlatButton(
                                 onPressed: () {
-                                  if (newStock != null) {
+                                  if (newStock.text != "") {
                                     setState(() {
                                       this.stock = Stock(newStock.text);
                                       addNewStock();
@@ -124,7 +145,17 @@ class _MyAppState extends State<MyApp> with SingleTickerProviderStateMixin {
                                     newStock.clear();
                                     Navigator.pop(context);
                                   } else {
-                                    newStock.text = "Please enter a symbol";
+                                    showDialog(
+                                        context: context,
+                                        builder: (context) {
+                                          return AlertDialog(
+                                            content: Text(
+                                              "Please enter a symbol...",
+                                              style: TextStyle(fontSize: 24),
+                                              textAlign: TextAlign.center,
+                                            ),
+                                          );
+                                        });
                                   }
                                 },
                                 child: Text('Submit')),
@@ -142,6 +173,7 @@ class _MyAppState extends State<MyApp> with SingleTickerProviderStateMixin {
             ),
             color: Colors.grey,
           ),
+          //Delete stock
           FlatButton(
             padding: EdgeInsets.all(10.0),
             onPressed: () {
@@ -186,6 +218,7 @@ class _MyAppState extends State<MyApp> with SingleTickerProviderStateMixin {
             ),
             color: Colors.grey,
           ),
+          //Delete all stocks
           FlatButton(
             padding: EdgeInsets.all(10.0),
             onPressed: () {
@@ -203,7 +236,9 @@ class _MyAppState extends State<MyApp> with SingleTickerProviderStateMixin {
                             padding: const EdgeInsets.all(8.0),
                             child: FlatButton(
                                 onPressed: () {
-                                  StockDB.db.removeAll();
+                                  setState(() {
+                                    StockDB.db.removeAll();
+                                  });
                                   Navigator.pop(context);
                                 },
                                 child: Text('Submit')),
