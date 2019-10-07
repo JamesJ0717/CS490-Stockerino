@@ -26,9 +26,9 @@ I like to do as much as I can without relying on external packages. Unfortunatel
 
 
 ## Todo
-| Complete | Todo |
-| --- | --- |
-| Yes | Ability to add a new stock |
-| No | Search stocks by name |
-| No | Add a new info page or dialog |
-| No | Make a new page for more information about a stock |
+| Complete | Todo | Branch |
+| --- | --- | --- |
+| Yes | Ability to add a new stock | N/A |
+| No | Search stocks by name | |
+| No | Add a new info page or dialog | | 
+| No | Make a new page for more information about a stock | |
