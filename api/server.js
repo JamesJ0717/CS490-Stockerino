@@ -1,7 +1,8 @@
-var express = require('express'),
-    app = express(),
-    port = process.env.PORT || 3000;
+const http = require('http');
+const app = require('./app');
 
-app.listen(port);
+const port = process.env.port || 3000;
 
-console.log('todo list RESTful API server started on: ' + port);
+const server = http.createServer(app.app);
+console.log('Server listening on port', port);
+server.listen(port);
