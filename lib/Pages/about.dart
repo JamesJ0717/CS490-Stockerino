@@ -1,27 +1,35 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/services.dart' show rootBundle;
+import 'package:flutter_markdown/flutter_markdown.dart';
 
 class About {
-  List<String> stocks;
+  Future<String> readContents() async {
+    return await rootBundle.loadString('assets/README.md');
+  }
 
-  Widget build() {
-    return Scaffold(
-      body: Container(
-        child: Column(
-          children: <Widget>[
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Text(
-                  "About This",
-                  style: TextStyle(fontSize: 36),
-                )
-              ],
-            ),
-            Text(
-                "Culpa tempor velit ea id fugiat ad magna consectetur duis dolore esse minim esse. Aute qui laborum sint in aliquip excepteur non. Amet adipisicing deserunt aliqua anim velit esse sit.")
-          ],
-        ),
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.all(10.0),
+      child: FutureBuilder<String>(
+        future: readContents(),
+        builder: (BuildContext context, AsyncSnapshot snapshot) {
+          switch (snapshot.connectionState) {
+            case ConnectionState.done:
+              return Container(
+                padding: EdgeInsets.fromLTRB(0, 0, 0, 75),
+                child: Markdown(
+                  data: snapshot.data,
+                ),
+              );
+            case ConnectionState.active:
+              return CircularProgressIndicator();
+            default:
+              return CircularProgressIndicator();
+          }
+        },
       ),
     );
   }

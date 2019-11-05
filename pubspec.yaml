@@ -1,7 +1,7 @@
 name: cs490_stock_ticker
 description: A new Flutter project.
 
-version: 1.0.0+1
+version: 1.0.1
 
 environment:
     sdk: '>=2.1.0 <3.0.0'
@@ -14,10 +14,22 @@ dependencies:
     path:
     sqflite:
     pull_to_refresh:
+    flutter_markdown:
+    path_provider:
 
 dev_dependencies:
     flutter_test:
         sdk: flutter
+    flutter_launcher_icons:
+
+flutter_icons:
+    image_path_ios: 'img/icon.png'
+    ios: true
+    image_path: 'img/icon.png'
 
 flutter:
     uses-material-design: true
+    assets:
+        - 'img/icon.png'
+        - 'assets/README.md'
+        - 'assets/stocks.db'

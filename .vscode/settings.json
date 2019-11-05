@@ -3,5 +3,15 @@
     "todo.statistics.project.enabled": "global.projects < 100 && project.all > 0",
     "todo.statistics.statusbar.enabled": "global.all > 0",
     "todo.statistics.project.text": "([pending]) [est]",
-    "todo.statistics.statusbar.text": "$(check) [finished]/[all] ([percentage]%)"
+    "todo.statistics.statusbar.text": "$(check) [finished]/[all] ([percentage]%)",
+    "sqltools.connections": [
+        {
+            "database": "./cs490_stock_ticker/assets/stocks.db",
+            "dialect": "SQLite",
+            "isActive": false,
+            "isConnected": false,
+            "name": "stocks"
+        }
+    ],
+    "sqltools.useNodeRuntime": true
 }

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:cs490_stock_ticker/stocksDB.dart';
+import 'package:cs490_stock_ticker/Components/stocksDB.dart';
 import 'package:sqflite/sqflite.dart';
 
 class NewStock {
