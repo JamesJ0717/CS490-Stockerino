@@ -3,10 +3,16 @@ import 'package:flutter/material.dart';
 
 class CryptoPage {
   Widget build(BuildContext context) {
-    return Container(
-      child: Center(
-        child: Text("Crypto Coming ;)"),
-      ),
+    return GridView.count(
+      crossAxisCount: 1,
+      children: <Widget>[
+        Center(
+          child: Text(
+            "Crypto Coming ;)",
+            style: TextStyle(fontSize: 24),
+          ),
+        )
+      ],
     );
   }
 }

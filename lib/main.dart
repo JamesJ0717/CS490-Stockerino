@@ -6,13 +6,15 @@ import 'package:cs490_stock_ticker/Pages/newStock.dart';
 import 'package:cs490_stock_ticker/Pages/about.dart';
 import 'package:cs490_stock_ticker/Pages/cryptoPage.dart';
 import 'package:cs490_stock_ticker/Components/stocksDB.dart';
+import 'package:cs490_stock_ticker/Components/stockAPI.dart';
+import 'package:cs490_stock_ticker/Components/stock.dart';
 
 void main() {
   runApp(MaterialApp(
     debugShowCheckedModeBanner: false,
     home: MyApp(),
     title: 'Stockerino',
-    theme: ThemeData.dark(),
+    theme: ThemeData.light(),
   ));
 }
 
@@ -27,6 +29,7 @@ class _MyAppState extends State<MyApp> with SingleTickerProviderStateMixin {
   final NewStock addNewStockTab = NewStock();
   final About aboutPage = About();
   final CryptoPage cryptoPage = CryptoPage();
+  final StockAPI myAPI = StockAPI();
 
   TabController controller;
   TextEditingController newStock;
@@ -57,15 +60,6 @@ class _MyAppState extends State<MyApp> with SingleTickerProviderStateMixin {
     refreshController.loadComplete();
   }
 
-  final _formKey = new GlobalKey<FormState>();
-  addNewStock() {
-    StockDB.db.insertStock(stock);
-  }
-
-  removeStock() {
-    StockDB.db.deleteStock(stock.symbol);
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -90,39 +84,9 @@ class _MyAppState extends State<MyApp> with SingleTickerProviderStateMixin {
       ),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add_circle),
-        onPressed: () => showDialog(
+        onPressed: () => showSearch(
           context: context,
-          builder: (context) => AlertDialog(
-            content: Form(
-              key: _formKey,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  Text('Add New Stock'),
-                  TextFormField(
-                    decoration:
-                        new InputDecoration(hintText: "Enter Stock's Symbol"),
-                    controller: newStock,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: FlatButton(
-                        onPressed: () {
-                          setState(
-                            () {
-                              this.stock = Stock(newStock.text);
-                              addNewStock();
-                            },
-                          );
-                          newStock.clear();
-                          Navigator.pop(context);
-                        },
-                        child: Text('Submit')),
-                  )
-                ],
-              ),
-            ),
-          ),
+          delegate: StockAPI(),
         ),
       ),
       appBar: AppBar(
@@ -130,9 +94,11 @@ class _MyAppState extends State<MyApp> with SingleTickerProviderStateMixin {
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.restore_from_trash),
-            onPressed: () => this.setState(() {
-              StockDB.db.removeAll();
-            }),
+            onPressed: () {
+              setState(() {
+                StockDB.db.removeAll();
+              });
+            },
           )
         ],
       ),

@@ -2,6 +2,10 @@ import 'dart:async';
 
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+
+import 'stock.dart';
 
 class StockDB {
   StockDB._();
@@ -18,17 +22,39 @@ class StockDB {
 
   Future<Database> openDB() async {
     var databasesPath = await getDatabasesPath();
-
     return await openDatabase(
-      join(databasesPath, 'stock_names.db'),
-      onOpen: (db) {},
-      onCreate: (db, version) {
-        return db.execute(
-          "CREATE TABLE stocks(id INTEGER PRIMARY KEY AUTOINCREMENT, symbol TEXT NOT NULL); INSERT INTO stocks (id, symbol) VALUES (0, aapl);",
-        );
+      join(databasesPath, 'stockerino.db'),
+      onOpen: (db) async {},
+      onCreate: (db, version) async {
+        var batch = db.batch();
+        _createStockTable(batch);
+        _createSymbolListTable(batch);
+        await batch.commit();
       },
       version: 1,
     );
+  }
+
+  void _createStockTable(Batch batch) {
+    batch.execute('DROP TABLE IF EXISTS stocks');
+    batch.execute('''
+    CREATE TABLE stocks (
+      id INTEGER PRIMARY KEY AUTOINCREMENT, 
+      symbol TEXT NOT NULL,
+      name TEXT NOT NULL
+    )''');
+  }
+
+  void _createSymbolListTable(Batch batch) {
+    batch.execute('DROP TABLE IF EXISTS symbolList');
+    batch.execute('''
+    CREATE TABLE symbolList (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      name TEXT NOT NULL,
+      symbol TEXT NOT NULL
+    )
+    ''');
+    makeTableForSymbols();
   }
 
   Future<void> insertStock(Stock stock) async {
@@ -50,10 +76,7 @@ class StockDB {
     final List<Map<String, dynamic>> maps = await db.query('stocks');
 
     return List.generate(maps.length, (i) {
-      return Stock(
-        maps[i]['symbol'],
-        maps[i]['id'],
-      );
+      return Stock(maps[i]['symbol'], maps[i]['name'], maps[i]['id']);
     });
   }
 
@@ -70,25 +93,37 @@ class StockDB {
   Future<void> removeAll() async {
     final db = await openDB();
 
-    await db.execute("DELETE FROM stocks WHERE id IS NOT 0");
-  }
-}
-
-class Stock {
-  String symbol;
-  int id;
-
-  Stock(String symbol, [int id]) {
-    this.symbol = symbol;
-    this.id = id;
+    await db.execute("DELETE FROM stocks");
   }
 
-  Map<String, dynamic> toMap() {
-    return {'symbol': symbol, 'id': id};
+  Future<void> makeTableForSymbols() async {
+    final db = await openDB();
+    int i = 0;
+    return http
+        .get(
+            Uri.encodeFull(
+                'https://cloud.iexapis.com/stable/ref-data/symbols?token=' +
+                    'pk_15392fe3de7e4253a1a4941d76535000'),
+            headers: {"Accept": "application/json"})
+        .then((res) => jsonDecode(res.body))
+        .then(
+          (res) {
+            for (var stock in res) {
+              Stock newStock = Stock(
+                  stock['symbol'].toString(), stock['name'].toString(), i++);
+              db.insert('symbolList', newStock.toMap(),
+                  conflictAlgorithm: ConflictAlgorithm.replace);
+            }
+          },
+        );
   }
 
-  @override
-  String toString() {
-    return '{id: $id, symbol: $symbol}';
+  Future<List<Stock>> find(fragment) async {
+    print(fragment);
+    final db = await openDB();
+    List<Map<String, dynamic>> maps = await db.query('symbolList');
+    return List.generate(maps.length, (i) {
+      return Stock(maps[i]['symbol'], maps[i]['name'], i);
+    });
   }
 }

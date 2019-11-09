@@ -24,6 +24,7 @@ router.get('/search', (req, res) => {
     console.log(req.query.fragment);
     db.findStock(req.query.fragment, (err, rows) => {
         if (err) console.error(err);
+        console.log(req.query, rows.length);
         res.json({ stocks: rows }).status(200);
     });
 });

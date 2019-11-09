@@ -19,7 +19,6 @@ class About {
           switch (snapshot.connectionState) {
             case ConnectionState.done:
               return Container(
-                padding: EdgeInsets.fromLTRB(0, 0, 0, 75),
                 child: Markdown(
                   data: snapshot.data,
                 ),

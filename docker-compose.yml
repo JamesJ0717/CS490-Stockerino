@@ -1,6 +1,0 @@
-version: '2.1'
-
-services:
-  cs490_stock_ticker:
-    image: cs490_stock_ticker
-    build: .

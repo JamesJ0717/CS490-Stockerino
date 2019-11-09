@@ -1,3 +1,4 @@
+// import 'package:cs490_stock_ticker/main.dart';
 import 'package:cs490_stock_ticker/main.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -59,17 +60,17 @@ class StockInfo extends State<MyApp> {
                 softWrap: true,
               ),
             ),
-            // IconButton(
-            //     padding: EdgeInsets.all(0),
-            //     icon: Icon(Icons.remove_circle),
-            //     onPressed: () {
-            //       this.setState(
-            //         () {
-            //           StockDB.db.deleteStock(info.symbol.toLowerCase());
-            //         },
-            //       );
-            //       Navigator.pop(context);
-            //     })
+            // FloatingActionButton(
+            //   backgroundColor: ThemeData.light().iconTheme.color,
+            //   mini: true,
+            //   onPressed: () => setState(() {
+            //     StockDB.db.deleteStock(info.symbol);
+            //   }),
+            //   child: Icon(
+            //     Icons.remove_circle_outline,
+            //     color: ThemeData.light().accentIconTheme.color,
+            //   ),
+            // )
           ],
         ),
         Row(
