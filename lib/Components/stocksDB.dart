@@ -23,13 +23,13 @@ class StockDB {
   Future<Database> openDB() async {
     var databasesPath = await getDatabasesPath();
     return await openDatabase(
-      join(databasesPath, 'stockerino.db'),
+      join(databasesPath, 'stocks.db'),
       onOpen: (db) async {},
       onCreate: (db, version) async {
         var batch = db.batch();
         _createStockTable(batch);
         _createSymbolListTable(batch);
-        await batch.commit();
+        await batch.commit(noResult: true);
       },
       version: 1,
     );
@@ -40,8 +40,8 @@ class StockDB {
     batch.execute('''
     CREATE TABLE stocks (
       id INTEGER PRIMARY KEY AUTOINCREMENT, 
-      symbol TEXT NOT NULL,
-      name TEXT NOT NULL
+      name TEXT NOT NULL,
+      symbol TEXT NOT NULL
     )''');
   }
 
@@ -57,17 +57,19 @@ class StockDB {
     makeTableForSymbols();
   }
 
-  Future<void> insertStock(Stock stock) async {
+  Future<int> insertStock(Stock stock) async {
     final Database db = await openDB();
 
     if (stock.symbol == '' || stock == null) {
-      return;
+      return 402;
     }
     await db.insert(
       'stocks',
       stock.toMap(),
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
+
+    return 200;
   }
 
   Future<List<Stock>> stocks() async {
@@ -118,8 +120,7 @@ class StockDB {
         );
   }
 
-  Future<List<Stock>> find(fragment) async {
-    print(fragment);
+  Future<List<Stock>> find() async {
     final db = await openDB();
     List<Map<String, dynamic>> maps = await db.query('symbolList');
     return List.generate(maps.length, (i) {

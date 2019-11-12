@@ -8,6 +8,7 @@ import 'package:cs490_stock_ticker/Pages/cryptoPage.dart';
 import 'package:cs490_stock_ticker/Components/stocksDB.dart';
 import 'package:cs490_stock_ticker/Components/stockAPI.dart';
 import 'package:cs490_stock_ticker/Components/stock.dart';
+import 'package:cs490_stock_ticker/Components/stockData.dart';
 
 void main() {
   runApp(MaterialApp(
@@ -21,6 +22,7 @@ void main() {
 class MyApp extends StatefulWidget {
   MyApp({Key key}) : super(key: key);
 
+  @override
   _MyAppState createState() => _MyAppState();
 }
 
@@ -38,8 +40,8 @@ class _MyAppState extends State<MyApp> with SingleTickerProviderStateMixin {
   @override
   void initState() {
     newStock = new TextEditingController();
-    super.initState();
     controller = TabController(length: 3, initialIndex: 1, vsync: this);
+    super.initState();
   }
 
   @override
@@ -52,8 +54,9 @@ class _MyAppState extends State<MyApp> with SingleTickerProviderStateMixin {
       RefreshController(initialRefresh: false);
 
   void onRefresh() async {
-    setState(() {});
-    refreshController.refreshCompleted();
+    setState(() {
+      refreshController.refreshCompleted();
+    });
   }
 
   void onLoading() async {
@@ -64,24 +67,23 @@ class _MyAppState extends State<MyApp> with SingleTickerProviderStateMixin {
   Widget build(BuildContext context) {
     return Scaffold(
       body: FutureBuilder<List<Stock>>(
-        future: StockDB.db.stocks(),
-        builder: (BuildContext context, AsyncSnapshot snapshot) {
-          return TabBarView(
-            children: <Widget>[
-              cryptoPage.build(context),
-              SmartRefresher(
-                controller: refreshController,
-                onRefresh: onRefresh,
-                onLoading: onLoading,
-                enablePullUp: false,
-                child: myGridView.build(snapshot.data),
-              ),
-              aboutPage.build(context)
-            ],
-            controller: controller,
-          );
-        },
-      ),
+          future: StockDB.db.stocks(),
+          builder: (BuildContext context, AsyncSnapshot snapshot) {
+            return TabBarView(
+              children: <Widget>[
+                cryptoPage.build(context),
+                SmartRefresher(
+                  controller: refreshController,
+                  onRefresh: onRefresh,
+                  onLoading: onLoading,
+                  enablePullUp: false,
+                  child: myGridView.build(snapshot.data),
+                ),
+                aboutPage.build(context)
+              ],
+              controller: controller,
+            );
+          }),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add_circle),
         onPressed: () => showSearch(

@@ -28,18 +28,14 @@ class StockInfo extends State<MyApp> {
         mainAxisSize: MainAxisSize.max,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
-          Row(
-            children: <Widget>[
-              Expanded(
-                flex: 1,
-                child: Text(
-                  'There was an error retrieving the data...',
-                  style: TextStyle(fontSize: 26),
-                  textAlign: TextAlign.center,
-                ),
-              ),
-            ],
-          )
+          Expanded(
+            flex: 1,
+            child: Text(
+              'There was an error retrieving the data...',
+              style: TextStyle(fontSize: 24),
+              textAlign: TextAlign.center,
+            ),
+          ),
         ],
       );
     }
@@ -55,7 +51,7 @@ class StockInfo extends State<MyApp> {
               flex: 1,
               child: Text(
                 info.companyName,
-                style: TextStyle(fontSize: 36),
+                style: TextStyle(fontSize: 30),
                 textAlign: TextAlign.center,
                 softWrap: true,
               ),
@@ -122,22 +118,20 @@ class StockInfo extends State<MyApp> {
 
   Container getStockInfo(name) {
     return Container(
-      child: Container(
-        child: FutureBuilder<StockData>(
-          future: getStockData(name),
-          builder: (BuildContext context, AsyncSnapshot<StockData> snapshot) {
-            switch (snapshot.connectionState) {
-              case ConnectionState.done:
-                return makeCard(snapshot.data);
-              case ConnectionState.active:
-                return CircularProgressIndicator();
-              default:
-                return CircularProgressIndicator();
-            }
-          },
-        ),
-        padding: EdgeInsets.fromLTRB(0, 5, 0, 5),
+      child: FutureBuilder<StockData>(
+        future: getStockData(name),
+        builder: (BuildContext context, AsyncSnapshot<StockData> snapshot) {
+          switch (snapshot.connectionState) {
+            case ConnectionState.done:
+              return makeCard(snapshot.data);
+            case ConnectionState.active:
+              return CircularProgressIndicator();
+            default:
+              return CircularProgressIndicator();
+          }
+        },
       ),
+      padding: EdgeInsets.fromLTRB(0, 5, 0, 5),
     );
   }
 

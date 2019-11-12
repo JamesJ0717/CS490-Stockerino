@@ -31,24 +31,16 @@ class StockAPI extends SearchDelegate<String> {
 
   @override
   Widget buildResults(BuildContext context) {
-    return FutureBuilder(
-      future: StockDB.db.insertStock(Stock(symbol, companyName, id)),
-      builder: (BuildContext context, AsyncSnapshot snapshot) {
-        switch (snapshot.connectionState) {
-          case ConnectionState.done:
-            close(context, ConnectionState.done.toString());
-            return Container();
-          default:
-            return CircularProgressIndicator();
-        }
-      },
-    );
+    StockDB.db
+        .insertStock(Stock(symbol, companyName, id))
+        .then((res) => close(context, res.toString()));
+    return Container();
   }
 
   @override
   Widget buildSuggestions(BuildContext context) {
     return FutureBuilder<List<Stock>>(
-      future: StockDB.db.find(query),
+      future: StockDB.db.find(),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         switch (snapshot.connectionState) {
           case ConnectionState.done:
@@ -60,13 +52,13 @@ class StockAPI extends SearchDelegate<String> {
                 }
               },
             );
-            print(myList);
+            // print(myList);
             return ListView.builder(
               itemBuilder: (context, index) => ListTile(
                 leading: Icon(Icons.add_to_photos),
                 title: Text(myList[index].name),
                 onTap: () {
-                  symbol = myList[index].symbol;
+                  symbol = myList[index].symbol.toLowerCase();
                   companyName = myList[index].name;
                   id = myList[index].id;
                   showResults(context);
@@ -75,7 +67,7 @@ class StockAPI extends SearchDelegate<String> {
               itemCount: myList.length,
             );
           default:
-            print(snapshot.connectionState.toString());
+            // print(snapshot.connectionState.toString());
             return Center(
               child: CircularProgressIndicator(),
             );

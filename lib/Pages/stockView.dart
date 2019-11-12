@@ -2,13 +2,15 @@ import 'package:flutter/material.dart';
 
 import 'package:cs490_stock_ticker/Components/stockInfo.dart';
 import 'package:cs490_stock_ticker/Components/stock.dart';
+// import 'package:cs490_stock_ticker/Components/stocksDB.dart';
 
 class MyGridView {
   StockInfo myStocks = StockInfo();
 
   Card getStructuredGridCell(name) {
     return Card(
-      elevation: 1.5,
+      color: Colors.white70,
+      // elevation: 1.5,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         verticalDirection: VerticalDirection.down,
@@ -20,7 +22,7 @@ class MyGridView {
   }
 
   GridView build(List<Stock> stocks) {
-    print("GridView build " + stocks.toString());
+    // print("GridView build " + stocks.toString());
     List<Widget> cards = [];
     if (stocks.isEmpty) {
       return GridView.count(
