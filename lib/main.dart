@@ -1,14 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 import 'package:cs490_stock_ticker/Pages/stockView.dart';
-import 'package:cs490_stock_ticker/Pages/newStock.dart';
 import 'package:cs490_stock_ticker/Pages/about.dart';
 import 'package:cs490_stock_ticker/Pages/cryptoPage.dart';
-import 'package:cs490_stock_ticker/Components/stocksDB.dart';
-import 'package:cs490_stock_ticker/Components/stockAPI.dart';
-import 'package:cs490_stock_ticker/Components/stock.dart';
-import 'package:cs490_stock_ticker/Components/stockData.dart';
 
 void main() {
   runApp(MaterialApp(
@@ -27,15 +21,12 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> with SingleTickerProviderStateMixin {
-  final MyGridView myGridView = MyGridView();
-  final NewStock addNewStockTab = NewStock();
+  final StockPage stockPage = StockPage();
   final About aboutPage = About();
   final CryptoPage cryptoPage = CryptoPage();
-  final StockAPI myAPI = StockAPI();
 
   TabController controller;
   TextEditingController newStock;
-  Stock stock;
 
   @override
   void initState() {
@@ -50,59 +41,15 @@ class _MyAppState extends State<MyApp> with SingleTickerProviderStateMixin {
     super.dispose();
   }
 
-  RefreshController refreshController =
-      RefreshController(initialRefresh: false);
-
-  void onRefresh() async {
-    setState(() {
-      refreshController.refreshCompleted();
-    });
-  }
-
-  void onLoading() async {
-    refreshController.loadComplete();
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: FutureBuilder<List<Stock>>(
-          future: StockDB.db.stocks(),
-          builder: (BuildContext context, AsyncSnapshot snapshot) {
-            return TabBarView(
-              children: <Widget>[
-                cryptoPage.build(context),
-                SmartRefresher(
-                  controller: refreshController,
-                  onRefresh: onRefresh,
-                  onLoading: onLoading,
-                  enablePullUp: false,
-                  child: myGridView.build(snapshot.data),
-                ),
-                aboutPage.build(context)
-              ],
-              controller: controller,
-            );
-          }),
-      floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.add_circle),
-        onPressed: () => showSearch(
-          context: context,
-          delegate: StockAPI(),
-        ),
+      body: TabBarView(
+        children: <Widget>[cryptoPage, stockPage, aboutPage.build(context)],
+        controller: controller,
       ),
       appBar: AppBar(
         title: Text("Stockerino"),
-        actions: <Widget>[
-          IconButton(
-            icon: Icon(Icons.restore_from_trash),
-            onPressed: () {
-              setState(() {
-                StockDB.db.removeAll();
-              });
-            },
-          )
-        ],
       ),
       bottomNavigationBar: Material(
         color: ThemeData.dark().primaryColor,

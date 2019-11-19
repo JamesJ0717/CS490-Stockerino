@@ -11,9 +11,8 @@ class About {
   }
 
   Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.all(10.0),
-      child: FutureBuilder<String>(
+    return Scaffold(
+      body: FutureBuilder<String>(
         future: readContents(),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           switch (snapshot.connectionState) {
