@@ -6,6 +6,7 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:cs490_stock_ticker/Components/Stocks/Stock.dart';
 import 'package:cs490_stock_ticker/Components/Stocks/StockDB.dart';
 import 'package:cs490_stock_ticker/Components/Stocks/StockSearch.dart';
+import 'package:cs490_stock_ticker/Components/DetailView.dart';
 
 class StockPage extends StatefulWidget {
   StockPage({Key key}) : super(key: key);
@@ -18,6 +19,8 @@ class _StockPageState extends State<StockPage> {
   RefreshController refreshController =
       RefreshController(initialRefresh: false);
 
+  bool edit = false;
+
   void _onRefresh() async {
     setState(() {});
     refreshController.refreshCompleted();
@@ -27,10 +30,17 @@ class _StockPageState extends State<StockPage> {
     refreshController.loadComplete();
   }
 
-  Card getStructuredGridCell(name) {
+  StockData info = new StockData();
+  DetailView details = new DetailView();
+
+  Card getStructuredGridCell(String name) {
     return Card(
       // color: Colors.white70,
       // elevation: 1.5,
+      // child: FlatButton(
+      //   onPressed: () => showDialog(
+      //       context: context,
+      //       builder: (context) => details.build(context, this.info)),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         verticalDirection: VerticalDirection.down,
@@ -38,6 +48,7 @@ class _StockPageState extends State<StockPage> {
           Center(child: getStockInfo(name)),
         ],
       ),
+      // ),
     );
   }
 
@@ -92,6 +103,16 @@ class _StockPageState extends State<StockPage> {
               return Scaffold(
                 appBar: AppBar(
                   title: Text("Stocks"),
+                  leading: Container(
+                    child: FlatButton(
+                      child: Icon(Icons.edit),
+                      onPressed: () {
+                        setState(() {
+                          this.edit = !this.edit;
+                        });
+                      },
+                    ),
+                  ),
                   actions: <Widget>[
                     IconButton(
                       icon: Icon(Icons.restore_from_trash),
@@ -100,7 +121,7 @@ class _StockPageState extends State<StockPage> {
                           StockDB.db.removeAll();
                         });
                       },
-                    )
+                    ),
                   ],
                 ),
                 body: SmartRefresher(
@@ -111,7 +132,7 @@ class _StockPageState extends State<StockPage> {
                     primary: true,
                     padding: const EdgeInsets.all(10.0),
                     crossAxisCount: 1,
-                    childAspectRatio: 2,
+                    childAspectRatio: 3,
                     mainAxisSpacing: 1.0,
                     crossAxisSpacing: 1.0,
                     children: cards,
@@ -139,13 +160,14 @@ class _StockPageState extends State<StockPage> {
   var responseBody, response;
 
   Future<StockData> getStockData(String symbol) {
-    String uri = 'https://cloud.iexapis.com/stable/stock/' +
-        symbol +
-        '/quote?token=pk_15392fe3de7e4253a1a4941d76535000';
-    return http
-        .get(Uri.encodeFull(uri), headers: {"Accept": "application/json"})
-        .then((response) => StockData.fromJson(json.decode(response.body)))
-        .catchError((err) => StockData.error());
+    String uri =
+        'https://cloud.iexapis.com/stable/stock/$symbol/quote?token=pk_15392fe3de7e4253a1a4941d76535000';
+    return http.get(Uri.encodeFull(uri),
+        headers: {"Accept": "application/json"}).then((response) {
+      return this.info = StockData.fromJson(json.decode(response.body));
+    }).catchError((err) {
+      return StockData.error(symbol);
+    });
   }
 
   Column makeCard(StockData info) {
@@ -155,18 +177,34 @@ class _StockPageState extends State<StockPage> {
         mainAxisSize: MainAxisSize.max,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
-          Expanded(
-            flex: 1,
-            child: Text(
-              'There was an error retrieving the data...',
-              style: TextStyle(fontSize: 24),
-              textAlign: TextAlign.center,
-            ),
+          Row(
+            children: <Widget>[
+              Text(
+                'There was an error retrieving the data...',
+                style: TextStyle(fontSize: 24),
+                textAlign: TextAlign.center,
+              ),
+              Visibility(
+                visible: this.edit,
+                child: FloatingActionButton(
+                  heroTag: "error $info",
+                  mini: true,
+                  onPressed: () {
+                    StockDB.db.deleteStock(info.symbol.toLowerCase());
+                    setState(() {});
+                  },
+                  child: Icon(
+                    Icons.remove_circle_outline,
+                    color: ThemeData.light().accentIconTheme.color,
+                  ),
+                ),
+              ),
+            ],
           ),
         ],
       );
     }
-    Color current = (!info.dollarChange.isNegative) ? Colors.green : Colors.red;
+    Color current = (!info.change.isNegative) ? Colors.green : Colors.red;
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       mainAxisSize: MainAxisSize.max,
@@ -178,23 +216,26 @@ class _StockPageState extends State<StockPage> {
               flex: 1,
               child: Text(
                 info.companyName,
-                style: TextStyle(fontSize: 30),
+                style: TextStyle(fontSize: 20),
                 textAlign: TextAlign.center,
                 softWrap: true,
               ),
             ),
-            FloatingActionButton(
-              heroTag: "remove" + info.symbol,
-              mini: true,
-              onPressed: () {
-                StockDB.db.deleteStock(info.symbol.toLowerCase());
-                setState(() {});
-              },
-              child: Icon(
-                Icons.remove_circle_outline,
-                color: ThemeData.light().accentIconTheme.color,
+            Visibility(
+              visible: this.edit,
+              child: FloatingActionButton(
+                heroTag: "remove" + info.symbol,
+                mini: true,
+                onPressed: () {
+                  StockDB.db.deleteStock(info.symbol.toLowerCase());
+                  setState(() {});
+                },
+                child: Icon(
+                  Icons.remove_circle_outline,
+                  color: ThemeData.light().accentIconTheme.color,
+                ),
               ),
-            )
+            ),
           ],
         ),
         Row(
@@ -212,7 +253,7 @@ class _StockPageState extends State<StockPage> {
           children: <Widget>[
             Expanded(
               child: Text(
-                ("\$" + info.current.toStringAsFixed(2)),
+                ("\$" + info.latestPrice.toStringAsFixed(2)),
                 style: TextStyle(fontSize: 22, color: current),
                 textAlign: TextAlign.center,
               ),
@@ -225,7 +266,7 @@ class _StockPageState extends State<StockPage> {
             Container(
               margin: EdgeInsets.fromLTRB(5, 0, 10, 0),
               child: Text(
-                "\$" + info.dollarChange.toString(),
+                "\$" + info.change.toString(),
                 style: TextStyle(fontSize: 18, color: current),
                 textAlign: TextAlign.center,
               ),
@@ -233,7 +274,7 @@ class _StockPageState extends State<StockPage> {
             Container(
               margin: EdgeInsets.fromLTRB(10, 0, 5, 0),
               child: Text(
-                info.percentChange.toStringAsFixed(2) + "%",
+                info.changePercent.toStringAsFixed(2) + "%",
                 style: (TextStyle(fontSize: 18, color: current)),
                 textAlign: TextAlign.center,
               ),
@@ -244,24 +285,23 @@ class _StockPageState extends State<StockPage> {
     );
   }
 
-  Container getStockInfo(name) {
-    return Container(
-      child: FutureBuilder<StockData>(
+  Card getStockInfo(name) {
+    return Card(
+      elevation: 0,
+      child: FutureBuilder<dynamic>(
         future: getStockData(name),
-        builder: (BuildContext context, AsyncSnapshot<StockData> snapshot) {
+        builder: (BuildContext context, AsyncSnapshot snapshot) {
           switch (snapshot.connectionState) {
             case ConnectionState.done:
               return makeCard(snapshot.data);
             case ConnectionState.active:
-              return Center(
-                  child: Row(children: <Widget>[CircularProgressIndicator()]));
             default:
               return Center(
-                  child: Row(children: <Widget>[CircularProgressIndicator()]));
+                child: CircularProgressIndicator(),
+              );
           }
         },
       ),
-      padding: EdgeInsets.fromLTRB(0, 5, 0, 5),
     );
   }
 }

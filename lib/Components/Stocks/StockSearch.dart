@@ -8,6 +8,11 @@ class StockSearch extends SearchDelegate<String> {
   int id = 0;
 
   @override
+  ThemeData appBarTheme(BuildContext context) {
+    return ThemeData.light();
+  }
+
+  @override
   List<Widget> buildActions(BuildContext context) {
     return [
       IconButton(
@@ -39,7 +44,6 @@ class StockSearch extends SearchDelegate<String> {
 
   @override
   Widget buildSuggestions(BuildContext context) {
-    print(query);
     return FutureBuilder<List<Stock>>(
       future: StockDB.db.find(),
       builder: (BuildContext context, AsyncSnapshot<List<Stock>> snapshot) {

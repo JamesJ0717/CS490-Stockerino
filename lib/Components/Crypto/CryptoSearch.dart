@@ -8,6 +8,11 @@ class CryptoSearch extends SearchDelegate<String> {
   String name;
 
   @override
+  ThemeData appBarTheme(BuildContext context) {
+    return ThemeData.light();
+  }
+
+  @override
   List<Widget> buildActions(BuildContext context) {
     return [
       IconButton(
@@ -35,7 +40,7 @@ class CryptoSearch extends SearchDelegate<String> {
 
   @override
   Widget buildSuggestions(BuildContext context) {
-    print(query);
+    // print(query);
     return FutureBuilder<List<Crypto>>(
       future: CryptoDB.db.find(),
       builder: (BuildContext context, AsyncSnapshot<List<Crypto>> snapshot) {
@@ -49,7 +54,7 @@ class CryptoSearch extends SearchDelegate<String> {
                 }
               },
             );
-            print(myList);
+            // print(myList);
             return ListView.builder(
               itemBuilder: (context, index) => ListTile(
                 leading: Icon(Icons.add_to_photos),

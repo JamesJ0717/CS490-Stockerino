@@ -9,7 +9,7 @@ void main() {
     debugShowCheckedModeBanner: false,
     home: MyApp(),
     title: 'Stockerino',
-    theme: ThemeData.light(),
+    theme: ThemeData.dark(),
   ));
 }
 

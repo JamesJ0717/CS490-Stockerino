@@ -18,6 +18,8 @@ class _CryptoPageState extends State<CryptoPage> {
   RefreshController refreshController =
       RefreshController(initialRefresh: false);
 
+  bool edit = false;
+
   void _onRefresh() async {
     setState(() {});
     refreshController.refreshCompleted();
@@ -35,7 +37,7 @@ class _CryptoPageState extends State<CryptoPage> {
             case ConnectionState.done:
               List<Widget> cards = [];
               List<Crypto> cryptos = snapshot.data;
-              // print("GridView build " + stocks.toString());
+
               if (cryptos.isEmpty) {
                 return Scaffold(
                   appBar: AppBar(
@@ -76,6 +78,14 @@ class _CryptoPageState extends State<CryptoPage> {
                 return Scaffold(
                   appBar: AppBar(
                     title: Text("Crypto"),
+                    leading: FlatButton(
+                      child: Icon(Icons.edit),
+                      onPressed: () {
+                        setState(() {
+                          this.edit = !this.edit;
+                        });
+                      },
+                    ),
                     actions: <Widget>[
                       IconButton(
                         icon: Icon(Icons.restore_from_trash),
@@ -98,7 +108,7 @@ class _CryptoPageState extends State<CryptoPage> {
                       crossAxisCount: 1,
                       mainAxisSpacing: 1.0,
                       crossAxisSpacing: 1.0,
-                      childAspectRatio: 2.5,
+                      childAspectRatio: 3,
                       children: cards,
                     ),
                   ),
@@ -121,7 +131,6 @@ class _CryptoPageState extends State<CryptoPage> {
 
   Card getCryptoInfo(Crypto crypto) {
     return Card(
-      // color: Colors.white70,
       child: FutureBuilder<CryptoData>(
         future: getInfo(crypto.symbol.toUpperCase()),
         builder: (BuildContext context, AsyncSnapshot<CryptoData> snapshot) {
@@ -167,14 +176,20 @@ class _CryptoPageState extends State<CryptoPage> {
                   textAlign: TextAlign.center,
                 ),
               ),
-              FloatingActionButton(
-                heroTag: "remove" + data.symbol,
-                mini: true,
-                child: Icon(Icons.remove_circle_outline),
-                onPressed: () {
-                  CryptoDB.db.deleteStock(data.symbol.toLowerCase());
-                  setState(() {});
-                },
+              Visibility(
+                visible: this.edit,
+                child: FloatingActionButton(
+                  heroTag: "error $data",
+                  mini: true,
+                  onPressed: () {
+                    CryptoDB.db.deleteStock(data.symbol.toLowerCase());
+                    setState(() {});
+                  },
+                  child: Icon(
+                    Icons.remove_circle_outline,
+                    color: ThemeData.light().accentIconTheme.color,
+                  ),
+                ),
               ),
             ],
           ),

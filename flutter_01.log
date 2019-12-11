@@ -1,0 +1,67 @@
+Flutter crash report; please file at https://github.com/flutter/flutter/issues.
+
+## command
+
+flutter assemble .
+
+## exception
+
+StateError: Bad state: No element
+
+```
+#0      ListMixin.firstWhere (dart:collection/list.dart:144:5)
+#1      AssembleCommand.target (package:flutter_tools/src/commands/assemble.dart:74:29)
+#2      AssembleCommand.runCommand (package:flutter_tools/src/commands/assemble.dart:106:56)
+<asynchronous suspension>
+#3      FlutterCommand.verifyThenRunCommand (package:flutter_tools/src/runner/flutter_command.dart:490:18)
+#4      _asyncThenWrapperHelper.<anonymous closure> (dart:async-patch/async_patch.dart:71:64)
+#5      _rootRunUnary (dart:async/zone.dart:1132:38)
+#6      _CustomZone.runUnary (dart:async/zone.dart:1029:19)
+#7      _FutureListener.handleValue (dart:async/future_impl.dart:137:18)
+#8      Future._propagateToListeners.handleValueCallback (dart:async/future_impl.dart:678:45)
+#9      Future._propagateToListeners (dart:async/future_impl.dart:707:32)
+#10     Future._completeWithValue (dart:async/future_impl.dart:522:5)
+#11     Future._asyncComplete.<anonymous closure> (dart:async/future_impl.dart:552:7)
+#12     _rootRun (dart:async/zone.dart:1124:13)
+#13     _CustomZone.run (dart:async/zone.dart:1021:19)
+#14     _CustomZone.runGuarded (dart:async/zone.dart:923:7)
+#15     _CustomZone.bindCallbackGuarded.<anonymous closure> (dart:async/zone.dart:963:23)
+#16     _microtaskLoop (dart:async/schedule_microtask.dart:41:21)
+#17     _startMicrotaskLoop (dart:async/schedule_microtask.dart:50:5)
+#18     _runPendingImmediateCallback (dart:isolate-patch/isolate_patch.dart:116:13)
+#19     _RawReceivePortImpl._handleMessage (dart:isolate-patch/isolate_patch.dart:173:5)
+```
+
+## flutter doctor
+
+```
+[✓] Flutter (Channel stable, v1.9.1+hotfix.6, on Mac OS X 10.15.1 19B88, locale en-US)
+    • Flutter version 1.9.1+hotfix.6 at /Users/jamesjohnson/NonHomeyStuff/flutter
+    • Framework revision 68587a0916 (10 weeks ago), 2019-09-13 19:46:58 -0700
+    • Engine revision b863200c37
+    • Dart version 2.5.0
+
+[!] Android toolchain - develop for Android devices (Android SDK version 28.0.3)
+    • Android SDK at /Users/jamesjohnson/Library/Android/sdk
+    • Android NDK location not configured (optional; useful for native profiling support)
+    • Platform android-28, build-tools 28.0.3
+    • Java binary at: /Applications/Android Studio.app/Contents/jre/jdk/Contents/Home/bin/java
+    • Java version OpenJDK Runtime Environment (build 1.8.0_202-release-1483-b49-5587405)
+    ! Some Android licenses not accepted.  To resolve this, run: flutter doctor --android-licenses
+
+[✓] Xcode - develop for iOS and macOS (Xcode 11.2.1)
+    • Xcode at /Applications/Xcode.app/Contents/Developer
+    • Xcode 11.2.1, Build version 11B500
+    • CocoaPods version 1.8.1
+
+[✓] Android Studio (version 3.5)
+    • Android Studio at /Applications/Android Studio.app/Contents
+    • Flutter plugin version 38.2.3
+    • Dart plugin version 191.8423
+    • Java version OpenJDK Runtime Environment (build 1.8.0_202-release-1483-b49-5587405)
+
+[!] Connected device
+    ! No devices available
+
+! Doctor found issues in 2 categories.
+```
